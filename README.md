@@ -1,4 +1,4 @@
-WEBSITE: https://classroom-finder-k.netlify.app/
+WEBSITE DEMO: https://classroom-finder-k.netlify.app/
 
 # Getting Started with Create React App
 
