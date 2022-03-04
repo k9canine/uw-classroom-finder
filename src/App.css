@@ -1,38 +1,121 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+html,
+body {
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  background: black;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+* {
+  box-sizing: border-box;
+}
+
+.term-info {
+  font-size: 10pt;
+  text-align: right;
+  padding-right: 10pt;
+}
+
+/* main {
+  margin: 2rem auto;
+  max-width: 300px;
+} */
+
+
+/* input {
+  display: block;
+  width: 100%;
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+} */
+
+button {
+  padding: 0.25rem 0.5rem;
+}
+
+.board {
+  margin-bottom: 1rem;
+}
+
+.row {
+  display: flex;
+}
+
+.square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  border: 1px solid white;
+  font-size: 2rem;
+}
+
+
+/* my css */
+
+.title, .time, .study-text{
+  text-align: center;
+}
+
+.study-text{
+  margin-top: 5%;
+}
+
+.user-form{
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+input{
+  vertical-align: middle;
+  margin: 1em;
+  padding: 0.5em;
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+.user-form button{
+  padding: 10px 20px;
+  background-color: dodgerblue;
+  border: 1px solid #ddd;
+  color: white;
+}
+
+.user-form button:hover{
+  background-color: royalblue;
+}
+
+.scroll-div{
+  margin: auto;
+  width: 40%;
+}
+
+.available-text, .timeSelected{
+  text-align: center;
+}
+
+.scroll-list{
+  height: 200px;
+  overflow: hidden;
+  overflow-y:scroll;
+  background-color: white;
+  color:black;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  /* margin-left: 20px; */
+}
+
+.centered{
+  text-align: center;
 }

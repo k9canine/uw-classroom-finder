@@ -1,0 +1,129 @@
+import json
+
+# get list of keys from data.json
+# go through each of the keys in the object to get the value
+# for each value: call the function split data
+
+
+# split data function:
+# takes a list of strings, for each string in the list, sorts it 
+#   into the list of five lists for monday tuesday wednesday thursday 
+#   friday and returns that list for each room 
+# 
+# result: new object with the same keys but in the value section
+#   we have a list of five lists containing the times (11 char)
+#   at which the room is occupied
+
+
+# OUTSIDE OF THIS FILE:
+# in a different file we're going to convert the times to datetime 
+# objects and work with that to show the times which the rooms are
+# unoccupied. 
+
+# ------------------------------------------------------------------------
+f = open('data.json')## imports the data from the json that was created.
+
+data = json.load(f) ## contains the data
+# ------------------------------------------------------------------------
+
+
+#will be used to change the time from 12 hour clock to 24 hour clock (for the first hour)
+def twelveto24_time(time): #time should be a string of length 2 eg. "01"
+    if time == "01":
+        return "13"
+    if time == "02":
+        return "14"
+    if time == "03":
+        return "15"
+    if time == "04":
+        return "16"
+    if time == "05":
+        return "17"
+    if time == "06":
+        return "18"
+    if time == "07":
+        return "19"
+    
+    return time
+
+#will be used to change the time from 12hour to 24 hour but including the edge case where classes run until 9PM
+def twelveto24_time2(time1, time2): 
+    #each time value is a string of length 2 eg. "01" where the first is the first hour and the second is the ending hour
+    #must be submitted in 12 hour formatting NOT 24 hour.
+    if time1 == "06" or time1 == "07":
+        if time2 == "06":
+            return "18"
+        if time2 == "07":
+            return "19"
+        if time2 == "08":
+            return "20"
+        if time2 == "09":
+            return "21"
+    else:
+        if time2 == "01":
+            return "13"
+        if time2 == "02":
+            return "14"
+        if time2 == "03":
+            return "15"
+        if time2 == "04":
+            return "16"
+        if time2 == "05":
+            return "17"
+        if time2 == "06":
+            return "18"
+        if time2 == "07":
+            return "19"
+    return time2
+            
+
+
+# format: 11:00-11:00 - we want to change the 1s.
+#indices: 012345678910
+
+def split_days(list_of_times):
+    # Contract: takes a list of strings, returns an object
+    # Purpose: takes the json with the list of classes and organizes the times into buckets for each day
+    sorted_list_of_times = {"M": [], "T": [], "W": [], "Th": [], "F": []}
+
+    for time in list_of_times:
+
+        first = time[0:2]
+        second = time[6:8]
+        new_first = twelveto24_time(first)
+        new_second = twelveto24_time2(first, second)
+
+        time_value = new_first + time[2:6] + new_second + time[8:11]
+
+        if "M" in time:
+            if time_value not in sorted_list_of_times["M"]:
+                sorted_list_of_times["M"].append(time_value)
+        if ("T" in time and "Th" not in time) or ("TW" in time or "TTh" in time):
+            if time_value not in sorted_list_of_times["T"]:
+                sorted_list_of_times["T"].append(time_value)
+        if "W" in time:
+            if time_value not in sorted_list_of_times["W"]:
+                sorted_list_of_times["W"].append(time_value)
+        if "Th" in time:
+            if time_value not in sorted_list_of_times["Th"]:    
+                sorted_list_of_times["Th"].append(time_value)
+        if "F" in time:
+            if time_value not in sorted_list_of_times["F"]:
+                sorted_list_of_times["F"].append(time_value)
+        
+    return sorted_list_of_times
+        
+#     print(sorted_list_of_times)
+
+# test_data = []
+
+# split_days(test_data)
+
+#!!!
+new_json = {}
+
+for key, value in data.items():
+    new_json[key] = split_days(value)
+
+with open('new_json.json', 'w') as outfile:
+    json.dump(new_json, outfile, indent=4)
