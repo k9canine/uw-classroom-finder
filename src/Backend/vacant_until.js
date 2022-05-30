@@ -1,6 +1,6 @@
 // This module takes in a room code, day of the week, and start time and finds the next start time after the one given
 
-var json = require('../Backend/new_json.json'); //with path
+var json = require('./new_json.json'); //with path
 
 const daysOfWeek = ["M", "T", "W", "Th", "F"]
 
@@ -9,6 +9,15 @@ const daysOfWeek = ["M", "T", "W", "Th", "F"]
 // requires: room_code is a valid string (the rest also need to be valid lol)
 
 // start_time should be of the form: "XX:XX"
+
+
+/**
+ * THis function does something useful
+ * @param {string} room_code  ythos os the room code
+ * @param {number} day_index 
+ * @param {string} start_time 
+ * @returns {string} how long something is valid for
+ */
 function vacantUntil(room_code, day_index, start_time) {
     let day = daysOfWeek[day_index]; // should be "M", "T" .. or "F"
     let timeList = json[room_code][day]; // this is now an array of times!

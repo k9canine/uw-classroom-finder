@@ -1,8 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from "react";
-import { vacantUntil } from './vacant_until.js';
-
+import { vacantUntil } from './Backend/vacant_until.js';
 
 function getAvailability(start_time, end_time, dayNum) {
   //finds the classrooms that are open for a given time range (inputted)
@@ -129,11 +128,11 @@ export default function Home() {
   const [end, setEnd] = useState("")
   const [submitCount, setSubmitCount] = useState(0)
   const [availableClassrooms, setAvailableClassrooms] = useState([])
-  const [term, setTerm] = useState("Winter 2022")  // hard coded for now lol
-
+  const [term, setTerm] = useState("Spring 2022")  // hard coded for now lol
+  const [classroom, setClassroom] = useState(""); // this stores what classroom we want to find the end time for!
 
   //hard coded rn: !!!!
-  const endDate = "2022-04-05" // this is the last day of classes for the term (YYYY-MM-DD)
+  const endDate = "2022-08-22" // this is the last day of classes for the term (YYYY-MM-DD)
 
   //-----------------------------------------------------------------------------
   // finds today's date which allows for us to set the initial day on the calendar to today and make it so that we cannot select a day before today

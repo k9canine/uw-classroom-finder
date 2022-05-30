@@ -2,7 +2,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 
-session = "1221" #replace with the session number shown on the opening screen
+session = "1225" #replace with the session number shown on the opening screen
 #level = "under" #replace "under" with "grad" for the grad courses
 #subject = "AFM" #replace "AMATH" with the subject
 
