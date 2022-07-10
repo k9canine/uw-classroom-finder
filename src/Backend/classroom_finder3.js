@@ -1,5 +1,5 @@
 //finds the classrooms that are open for a given time range (inputted)
-var json = require('./new_json.json'); //with path
+var json = require('./sorted_data.json'); //with path
 
 
 // ========================================================================================================================

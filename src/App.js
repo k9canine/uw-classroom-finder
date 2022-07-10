@@ -3,9 +3,11 @@ import './App.css';
 import { useEffect, useState } from "react";
 import { vacantUntil } from './Backend/vacant_until.js';
 
+const WEEKEND_MESSAGE = 'No classes run on Sat/Sun, so all classrooms are available';
+
 function getAvailability(start_time, end_time, dayNum) {
   //finds the classrooms that are open for a given time range (inputted)
-  var json = require('./new_json.json'); //with path
+  var json = require('./sorted_data.json'); //with path
 
   // ========================================================================================================================
 
@@ -39,7 +41,7 @@ function getAvailability(start_time, end_time, dayNum) {
       let option2 = (initial < end_time && end_time < final)
       let option3 = (start_time < initial && initial < end_time)
       let option4 = (start_time < final && final < end_time)
-      let option5 = (start_time == initial && end_time == final)
+      let option5 = (start_time === initial && end_time === final)
       return option1 || option2 || option3 || option4 || option5
     }
 
@@ -121,6 +123,17 @@ function searchResults(dayOfWeek, dateSelected, start, end) {
 }
 
 
+function availabilityText(classroom, vacantUntilTime) {
+  if (classroom === '') {
+    return ''
+  }
+  if (vacantUntilTime === null) {
+    return 'The classroom is free for the rest of the day.'
+  }
+  return `The classroom is free until ${vacantUntilTime}.`
+}
+
+
 
 export default function Home() {
   const [time, setTime] = useState((new Date()).toLocaleTimeString());
@@ -130,6 +143,8 @@ export default function Home() {
   const [availableClassrooms, setAvailableClassrooms] = useState([])
   const [term, setTerm] = useState("Spring 2022")  // hard coded for now lol
   const [classroom, setClassroom] = useState(""); // this stores what classroom we want to find the end time for!
+  const [vacantUntilTime, setVacantUntilTime] = useState(""); // this stores the time at which classroom is occupied next
+
 
   //hard coded rn: !!!!
   const endDate = "2022-08-22" // this is the last day of classes for the term (YYYY-MM-DD)
@@ -153,7 +168,7 @@ export default function Home() {
   const [dayWeek, setDayWeek] = useState(getDayOfWeek(dateSelected)) // produces the day of the week (0-6) (Sun - Sat)
   const [dayWeekName, setDayWeekName] = useState(indexToDay(dayWeek)) // produces the name of the day of the week
   const [resultInfo, setResultInfo] = useState(""); // resultInfo is the date/time of the search result
-
+  
 
 
   //-----------------------------------------------------------------------------
@@ -171,28 +186,45 @@ export default function Home() {
 
 
   useEffect(() => {
-    if (submitCount != 0) {
-      if (dayWeek != 0 && dayWeek != 6) {
+    if (submitCount !== 0) {
+      if (dayWeek !== 0 && dayWeek !== 6) {
         setAvailableClassrooms(getAvailability(start, end, dayWeek))
       }
       else {
-        setAvailableClassrooms(["No classes run on Sat/Sun, so all classrooms are available"])
+        setAvailableClassrooms([WEEKEND_MESSAGE])
       }
-      // add a note on screen that says classes do not run on sat/sun so we will not produce results for those days
+      
+      document.getElementById("scroll-div-id").style.visibility = "visible";
     }
   }, [submitCount])
+
+  useEffect(() => {
+    if (classroom === '') {
+      setVacantUntilTime("");
+    }
+    else {
+      setVacantUntilTime(vacantUntil(classroom, dayWeek - 1, start));
+    }
+  }, [classroom])
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitCount(prev => prev + 1)
     setResultInfo(searchResults(dayWeekName, dateSelected, start, end))
+    setClassroom("");
   }
 
 
   return <main>
-    <p className="term-info">{term}</p>
-    <h1 className="title">Waterloo Classroom Finder</h1>
-    <p className="time">It is currently {today} {time}</p>
+    <div className = "header">
+      <div className = "title-time-box">
+        <h1 className="title">Waterloo Classroom Finder</h1>
+      </div>
+      <div className = "term-box">
+        <p className="term-info">{term}</p>
+        <p className="time">It is currently {today} {time}</p>
+      </div>
+    </div>
 
     <h2 className="study-text">I would like to study on:</h2>
     <form className="user-form" onSubmit={handleSubmit}>
@@ -227,15 +259,33 @@ export default function Home() {
 
 
     </form>
-    <div className="scroll-div">
-      <h2 className="available-text">Available Classrooms:</h2>
-      <p>{resultInfo}</p>
-      <ul className="scroll-list">
-        {availableClassrooms.map((classroom, index) => <li key={index.toString()}>{classroom}</li>)}
-      </ul>
-    </div>
+      <div className="scroll-div" id = "scroll-div-id">
+        <h2 className="available-text">Available Classrooms:</h2>
+        <p className = "available-text">{resultInfo}</p>
+        <div className='content'>
+          <ul className="scroll-list">
+            {availableClassrooms.map((classroom, index) => {
+              if (classroom === WEEKEND_MESSAGE) {
+                return <li key='weekend-message'>{classroom}</li>
+              }
 
-    <p className="centered">{availableClassrooms.length} results</p>
+              return (
+                <button className='availability-button'  onClick={() => setClassroom(classroom)}>
+                  <li key={index.toString()}>{classroom}</li>
+                </button>
+              )
+            })}
+          </ul>  
+          <div className = "availability-box">
+            <h1 className='availability-header'>{classroom}</h1>
+            <h6 className='availability-text'>{availabilityText(classroom, vacantUntilTime)}</h6>
+          </div>
+        </div>
+        <p className="results">{availableClassrooms.length} results</p>
+      </div>
+     
+
+    
   </main>
 }
 

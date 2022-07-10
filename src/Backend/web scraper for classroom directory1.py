@@ -2,9 +2,32 @@ import requests
 import json
 from bs4 import BeautifulSoup
 
+
+# finding the session number ----------------------------------------------------------------------------
+
+
+
 session = "1225" #replace with the session number shown on the opening screen
 #level = "under" #replace "under" with "grad" for the grad courses
 #subject = "AFM" #replace "AMATH" with the subject
+
+
+# finds the current term
+# def find_term(): 
+    
+#     url = "https://classes.uwaterloo.ca/under.html"
+#     response = requests.post(url) 
+#     soup = BeautifulSoup (response.text, 'html.parser')
+
+
+#     options = soup.find(selected = True)
+    
+#     return options.text[0:4]
+    
+
+# session = find_term()
+
+## finding the occupied times -------------------------------------------------------------------------------------
 
 room_time_dict = {}
 
@@ -64,7 +87,7 @@ for level in levels:
 
     #print(soup.find_all('table')[2].find_all('tr')[1].find_all('td')[10])
 
-with open("data.json", "w") as fp:
+with open("raw_data.json", "w") as fp:
     json.dump(room_time_dict, fp, indent=4, sort_keys = True)
   
 

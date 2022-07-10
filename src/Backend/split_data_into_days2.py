@@ -21,7 +21,7 @@ import json
 # unoccupied. 
 
 # ------------------------------------------------------------------------
-f = open('data.json')## imports the data from the json that was created.
+f = open('raw_data.json')## imports the data from the json that was created.
 
 data = json.load(f) ## contains the data
 # ------------------------------------------------------------------------
@@ -120,10 +120,10 @@ def split_days(list_of_times):
 # split_days(test_data)
 
 #!!!
-new_json = {}
+sorted_data = {}
 
 for key, value in data.items():
-    new_json[key] = split_days(value)
+    sorted_data[key] = split_days(value)
 
-with open('new_json.json', 'w') as outfile:
-    json.dump(new_json, outfile, indent=4)
+with open('sorted_data.json', 'w') as outfile:
+    json.dump(sorted_data, outfile, indent=4)
