@@ -1,72 +1,10 @@
-// import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from "react";
 import { vacantUntil } from './Backend/vacant_until';
 import { getAvailableClassrooms } from './Backend/get_available_classrooms';
+import {indexToDay, getDayOfWeek, formattedDay, searchResults, availabilityText} from './Backend/helpers.js';
 
 const WEEKEND_MESSAGE = 'No classes run on Sat/Sun, so all classrooms are available';
-
-function indexToDay(index) {// takes an index from 0-6 and returns Sun-Sat
-  if (index === 0) {
-    return "Sunday"
-  }
-  if (index === 1) {
-    return "Monday"
-  }
-  if (index === 2) {
-    return "Tuesday"
-  }
-  if (index === 3) {
-    return "Wednesday"
-  }
-  if (index === 4) {
-    return "Thursday"
-  }
-  if (index === 5) {
-    return "Friday"
-  }
-  if (index === 6) {
-    return "Saturday"
-  }
-}
-
-function getDayOfWeek(date) { // date: YYYY-MM-DD
-  const dayOfWeek = new Date(
-    Number(date.slice(0, 4)), Number(date.slice(5, 7)) - 1, Number(date.slice(8, 10))
-  ).getDay()
-  return dayOfWeek
-}
-
-
-
-function formattedDay(num) {
-  if (num < 10) {
-    return "0" + num.toString();
-  }
-  else {
-    return num.toString()
-  }
-}
-
-function searchResults(dayOfWeek, dateSelected, start, end) {
-  return `${dayOfWeek} ${dateSelected} | ${start} to ${end}`
-
-  // <p className = "centered" style = {start === "" || end === "" ? {display: "none"} : {display: "block"}}>
-  //           {dayWeekName} {dateSelected} | {start} to {end} 
-  //         </p>
-}
-
-
-function availabilityText(classroom, vacantUntilTime) {
-  if (classroom === '') {
-    return ''
-  }
-  if (vacantUntilTime === null) {
-    return 'The classroom is free for the rest of the day.'
-  }
-  return `The classroom is free until ${vacantUntilTime}.`
-}
-
 
 
 export default function Home() {
@@ -78,7 +16,7 @@ export default function Home() {
   const [term, setTerm] = useState("Spring 2022")  // hard coded for now lol
   const [classroom, setClassroom] = useState(""); // this stores what classroom we want to find the end time for!
   const [vacantUntilTime, setVacantUntilTime] = useState(""); // this stores the time at which classroom is occupied next
-
+  const [resultInfo, setResultInfo] = useState(""); // resultInfo is the date/time of the search result
 
   //hard coded rn: !!!!
   const endDate = "2022-08-22" // this is the last day of classes for the term (YYYY-MM-DD)
@@ -87,7 +25,6 @@ export default function Home() {
   // finds today's date which allows for us to set the initial day on the calendar to today and make it so that we cannot select a day before today
   let currentDate = new Date()
   let dayMonth = currentDate.getDate() // produces the day of the month (1 - 31)
-  // let dayWeek = currentDate.getDay();
   let month = currentDate.getMonth() + 1;
   let year = currentDate.getFullYear().toString();
 
@@ -98,25 +35,20 @@ export default function Home() {
   const [today, setToday] = useState(year + "-" + month + "-" + dayMonth)
   const [dateSelected, setDateSelected] = useState(year + "-" + month + "-" + dayMonth) //day selected by user
 
-  //@@@
   const [dayWeek, setDayWeek] = useState(getDayOfWeek(dateSelected)) // produces the day of the week (0-6) (Sun - Sat)
   const [dayWeekName, setDayWeekName] = useState(indexToDay(dayWeek)) // produces the name of the day of the week
-  const [resultInfo, setResultInfo] = useState(""); // resultInfo is the date/time of the search result
   
-
-
   //-----------------------------------------------------------------------------
-
-
   useEffect(() => {
     setTimeout(() => {
       setTime((new Date()).toLocaleTimeString())
     }, 1000)
   }, [time])
 
-  useEffect(() => {
-    setToday(year + "-" + month + "-" + dayMonth)
-  }, [dayMonth])
+  // flag!
+  // useEffect(() => {
+  //   setToday(year + "-" + month + "-" + dayMonth)
+  // }, [dayMonth])
 
 
   useEffect(() => {
@@ -222,26 +154,3 @@ export default function Home() {
     
   </main>
 }
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
