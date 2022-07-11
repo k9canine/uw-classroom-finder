@@ -1,76 +1,10 @@
 // import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from "react";
-import { vacantUntil } from './Backend/vacant_until.js';
+import { vacantUntil } from './Backend/vacant_until';
+import { getAvailableClassrooms } from './Backend/get_available_classrooms';
 
 const WEEKEND_MESSAGE = 'No classes run on Sat/Sun, so all classrooms are available';
-
-function getAvailability(start_time, end_time, dayNum) {
-  //finds the classrooms that are open for a given time range (inputted)
-  var json = require('./sorted_data.json'); //with path
-
-  // ========================================================================================================================
-
-  //  hard-coded values right now:
-
-  //REQUIRES: end time must be less than start time
-  // let start_time = "08:30" //start time is when the person wants to go study
-  // let end_time = "17:20" // end time is when the person will be done studying
-
-  // NOTES: !!!
-  // maybe we can use a dropdown menu to let them choose start and end times so it's easier to parse the data
-
-
-  const daysOfWeek = ["M", "T", "W", "Th", "F"]
-  // NOTES: !!!
-  // again, a dropodown that lets them choose either the day of the week or a day on the calendar and we can use 
-  //   the date module to determine which day of the week it is. 
-  // disallow options for choosing the weekends.
-
-  let day = daysOfWeek[dayNum - 1] // because dayNum will be between 1-5 for M to F so lower every value by 1 to get index
-
-  // ===ACTUAL CODE===========================================================================================================
-
-  function isOccupied(timeObject) {
-    // takes the value component associated with a key and determines if the room is occupied
-    //   during the time 
-    // Obj -> Bool
-
-    function timeBetween(initial, final, start_time, end_time) { //helper function for isOccupied
-      let option1 = (initial < start_time && start_time < final)
-      let option2 = (initial < end_time && end_time < final)
-      let option3 = (start_time < initial && initial < end_time)
-      let option4 = (start_time < final && final < end_time)
-      let option5 = (start_time === initial && end_time === final)
-      return option1 || option2 || option3 || option4 || option5
-    }
-
-    let timeList = timeObject[day];
-
-    for (let i in timeList) {
-      let time = timeList[i]
-      let initial = time.slice(0, 5) // initial is the time that the class starts
-      let final = time.slice(6, 12) // final is the time that the class ends
-
-      if (timeBetween(initial, final, start_time, end_time)) {
-        // or if the other way around initial is between start and end or final is between start and end
-
-        return true; // occupied!
-      }
-    }
-    return false // not occupied! - because true was never returned so the condition is never satisfied 
-  }
-
-  let availableClassrooms = [];
-
-  for (const [classroom, value] of Object.entries(json)) {
-    if (isOccupied(value) === false) {
-      availableClassrooms.push(classroom)
-    }
-  }
-
-  return availableClassrooms
-}
 
 function indexToDay(index) {// takes an index from 0-6 and returns Sun-Sat
   if (index === 0) {
@@ -188,7 +122,7 @@ export default function Home() {
   useEffect(() => {
     if (submitCount !== 0) {
       if (dayWeek !== 0 && dayWeek !== 6) {
-        setAvailableClassrooms(getAvailability(start, end, dayWeek))
+        setAvailableClassrooms(getAvailableClassrooms(start, end, dayWeek))
       }
       else {
         setAvailableClassrooms([WEEKEND_MESSAGE])
